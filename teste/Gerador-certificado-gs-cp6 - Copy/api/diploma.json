@@ -1,0 +1,20 @@
+POST /diploma
+Content-Type: application/json
+
+{
+  "nome_aluno": "Maria Silva",
+  "data_conclusao": "2024-11-01",
+  "nome_curso": "Engenharia de Software",
+  "nacionalidade": "Brasileira",
+  "naturalidade": "São Paulo",
+  "data_nascimento": "1990-10-10",
+  "numero_rg": "12345678",
+  "data_emissao": "2024-11-01",
+  "assinaturas": [
+    {
+      "cargo": "Diretor",
+      "nome": "Dr. Fulano de Tal"
+    }
+  ],
+  "template_diploma": "default"
+}
