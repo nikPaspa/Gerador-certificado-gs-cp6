@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
   host: 'mysql',
   user: 'user',
   password: 'userpassword',
-  database: 'Gerador-certificado-gs-cp6'
+  database: 'Geradorcertificadogscp6'
 });
 
 connection.connect((err) => {

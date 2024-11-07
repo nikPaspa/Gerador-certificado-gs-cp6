@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS Gerador-certificado-gs-cp6;
-USE Gerador-certificado-gs-cp6;
+CREATE DATABASE IF NOT EXISTS Geradorcertificadogscp6;
+USE Geradorcertificadogscp6;
 
 CREATE TABLE IF NOT EXISTS diplomas (
     id INT AUTO_INCREMENT PRIMARY KEY,

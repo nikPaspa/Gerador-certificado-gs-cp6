@@ -9,7 +9,7 @@ services:
       DB_HOST: db
       DB_USER: user
       DB_PASSWORD: userpassword
-      DB_NAME: Gerador-certificado-gs-cp6
+      DB_NAME: Geradorcertificadogscp6
       RABBITMQ_URL: amqp://rabbitmq
     depends_on:
       - db
@@ -20,7 +20,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: Gerador-certificado-gs-cp6
+      MYSQL_DATABASE: Geradorcertificadogscp6
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
     ports:
