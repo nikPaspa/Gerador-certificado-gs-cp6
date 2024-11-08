@@ -25,7 +25,7 @@ const placeholders = {
   "{{data_conclusao}}": "15/12/2025",
   "{{curso}}": "Sistemas de Informação",
   "{{carga_horaria}}": "400",
-  "{{data_emissao}}": "20/01/2025",
+  "{{data_emissao}}": "20/01/2026",
   "{{nome_assinatura}}": "Maria Pereira",
   "{{cargo}}": "Diretora Acadêmica"
 };
@@ -39,5 +39,7 @@ for (const [placeholder, value] of Object.entries(placeholders)) {
   fs.writeFileSync(path.join(__dirname, 'certificado.pdf'), pdfBuffer);
   console.log('PDF gerado com sucesso: certificado.pdf');
 })();
+
+
 
 console.log(diplomaHTML);

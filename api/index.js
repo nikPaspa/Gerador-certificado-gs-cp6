@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('mysql2');
 const amqp = require('amqplib');
 const bodyParser = require('body-parser');
 
@@ -7,8 +7,8 @@ const app = express();
 app.use(bodyParser.json());
 
 // Conexão com o MySQL
-const connection = mysql.createConnection({
-  host: 'mysql',
+const connection = db.createConnection({
+  host: 'db',
   user: 'user',
   password: 'userpassword',
   database: 'Geradorcertificadogscp6'
@@ -19,7 +19,7 @@ connection.connect((err) => {
   console.log('Conectado ao MySQL!');
 });
 
-// Conexão RabbitMQ
+
 async function sendToQueue(message) {
   try {
     const connection = await amqp.connect('amqp://rabbitmq');
@@ -35,14 +35,14 @@ async function sendToQueue(message) {
   }
 }
 
-// Endpoint para receber JSON e salvar no MySQL
 app.post('/diploma', async (req, res) => {
   const {
     nome_aluno,
     data_conclusao,
     nome_curso,
+    carga_horaria,
     nacionalidade,
-    naturalidade,
+    estado,
     data_nascimento,
     numero_rg,
     data_emissao,
@@ -50,15 +50,25 @@ app.post('/diploma', async (req, res) => {
     template_diploma
   } = req.body;
 
-  // Salvando os dados no MySQL
-  const query = `INSERT INTO diplomas (nome_aluno, data_conclusao, nome_curso, nacionalidade, naturalidade, data_nascimento, numero_rg, data_emissao, template_diploma) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+ 
+  const cacheKey = `diploma:${numero_rg}`;
+  const cachedData = await getCache(cacheKey);
+  if (cachedData) {
+    console.log('Cache hit');
+    return res.status(200).json(cachedData);
+  }
+
+  console.log('Cache miss');
+  // Prossiga para salvar no banco de dados
+  const query = `INSERT INTO diplomas (nome_aluno, data_conclusao, nome_curso, carga_horaria, nacionalidade, estado, data_nascimento, numero_rg, data_emissao, template_diploma) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   connection.query(query, [
     nome_aluno,
     data_conclusao,
     nome_curso,
+    carga_horaria,
     nacionalidade,
-    naturalidade,
+    estado,
     data_nascimento,
     numero_rg,
     data_emissao,
@@ -69,7 +79,6 @@ app.post('/diploma', async (req, res) => {
       return res.status(500).send('Erro ao salvar no banco de dados.');
     }
 
-    // Adicionar assinaturas
     assinaturas.forEach(({ cargo, nome }) => {
       const queryAssinatura = `INSERT INTO assinaturas (diploma_id, cargo, nome) VALUES (?, ?, ?)`;
       connection.query(queryAssinatura, [result.insertId, cargo, nome], (err) => {
@@ -77,15 +86,40 @@ app.post('/diploma', async (req, res) => {
       });
     });
 
-    // Enviar os dados para a fila RabbitMQ
-    sendToQueue(req.body);
-
+    // Enviar para RabbitMQ e salvar dados em cache
+    const diplomaData = { ...req.body, id: result.insertId };
+    sendToQueue(diplomaData);
+    setCache(cacheKey, diplomaData); // Salva no cache
+    
     res.status(200).send('Dados recebidos e processados com sucesso.');
   });
 });
+
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+
+const redis = require('redis');
+const redisClient = redis.createClient({
+  url: 'redis://redis:6379'
+});
+
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+(async () => {
+  await redisClient.connect();
+})();
+
+async function setCache(key, value, expiration = 3600) { // Cache de 1 hora
+  await redisClient.set(key, JSON.stringify(value), 'EX', expiration);
+}
+
+async function getCache(key) {
+  const data = await redisClient.get(key);
+  return data ? JSON.parse(data) : null;
+}
+

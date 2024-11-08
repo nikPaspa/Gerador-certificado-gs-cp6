@@ -14,6 +14,7 @@ services:
     depends_on:
       - db
       - rabbitmq
+      - redis
 
   db:
     image: mysql:5.7
@@ -31,3 +32,8 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
