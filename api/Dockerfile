@@ -8,7 +8,14 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instalar as dependências
-RUN npm install
+RUN npm install puppeteer
+RUN npm install fs
+RUN npm install path
+RUN npm install process
+RUN npm install body-parser
+RUN npm install mysql2
+RUN npm install amqplib
+RUN npm install express
 
 # Copiar o restante do código
 COPY . .
