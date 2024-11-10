@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS Geradorcertificadogscp6.diplomas;
-USE Geradorcertificadogscp6.diplomas;
+CREATE DATABASE IF NOT EXISTS Geradorcertificadogscp6;
+USE Geradorcertificadogscp6;
 
 CREATE TABLE IF NOT EXISTS diplomas (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,5 +23,7 @@ CREATE TABLE IF NOT EXISTS assinaturas (
     FOREIGN KEY (diploma_id) REFERENCES diplomas(id)
 );
 
-INSERT INTO diplomas (nome_aluno, data_conclusao, nome_curso, carga_horaria, nacionalidade, estado, data_nascimento, numero_rg, data_emissao, template_diploma) VALUES ('Nikolas De Oliveira Paspaltzis', '2025-12-15', 'Sistemas de Informação', '400', 'Brasileiro', 'São Paulo', '2001-04-27', '16.519.320-7', '2026-01-20');
-INSERT INTO assinaturas (diploma_id, cargo, nome) VALUES (1, Diretora Acadêmica,Maria Pereira)
+INSERT INTO diplomas
+ (nome_aluno, data_conclusao, nome_curso, carga_horaria, nacionalidade, estado, data_nascimento, numero_rg, data_emissao) 
+VALUES ('Nikolas De Oliveira Paspaltzis', '2025-12-15', 'Sistemas de Informação', '400', 'Brasileiro', 'São Paulo', '2001-04-27', '16.519.320-7', '2026-01-20');
+INSERT INTO assinaturas (diploma_id, cargo, nome) VALUES (1, 'Diretora Acadêmica','Maria Pereira');

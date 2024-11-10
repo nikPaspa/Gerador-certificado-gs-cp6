@@ -11,7 +11,7 @@ const connection = db.createConnection({
   host: 'db',
   user: 'user',
   password: 'userpassword',
-  database: 'db'
+  database: 'Geradorcertificadogscp6'
 });
 
 connection.connect((err) => {
@@ -60,7 +60,7 @@ app.post('/diploma', async (req, res) => {
 
   console.log('Cache miss');
   // Prossiga para salvar no banco de dados
-  const query = `INSERT INTO diplomas (nome_aluno, data_conclusao, nome_curso, carga_horaria, nacionalidade, estado, data_nascimento, numero_rg, data_emissao, template_diploma) VALUES ('Nikolas De Oliveira Paspaltzis', '2025-12-15', 'Sistemas de Informação', '400', 'Brasileiro', 'São Paulo', '2001-04-27', '16.519.320-7', '2026-01-20')
+  const query = `INSERT INTO diplomas (nome_aluno, data_conclusao, nome_curso, carga_horaria, nacionalidade, estado, data_nascimento, numero_rg, data_emissao, template_diploma) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)
   `;
 
   connection.query(query, [
@@ -81,7 +81,7 @@ app.post('/diploma', async (req, res) => {
     }
 
     assinaturas.forEach(({ cargo, nome }) => {
-      const queryAssinatura = `INSERT INTO assinaturas (diploma_id, cargo, nome) VALUES (1, Diretora Acadêmica,Maria Pereira)`;
+      const queryAssinatura = `INSERT INTO assinaturas (diploma_id, cargo, nome) VALUES (?, ?, ?)`;
       connection.query(queryAssinatura, [result.insertId, cargo, nome], (err) => {
         if (err) console.error("Erro ao salvar assinatura:", err);
       });
